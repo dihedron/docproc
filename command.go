@@ -2,9 +2,9 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -26,30 +26,36 @@ func (opts *Options) Execute() error {
 	var output *os.File
 	var err error
 
-	log.Println("entering command")
-
 	// read the template
 	templ, err := template.ParseFiles(opts.Template)
 	if err != nil {
+		fmt.Fprintf(os.Stderr, "error parsing template file %s: %v\n", opts.Template, err)
 		return err
 	}
 
 	// read input
 	if opts.Input != "" {
-		log.Printf("reading from input: %v\n", opts.Input)
 		input, err = os.ReadFile(opts.Input)
 	} else {
-		log.Println("reading from standard input")
 		input, err = ioutil.ReadAll(os.Stdin)
 	}
 	if err != nil {
-		fmt.Printf("error reading input: %v\n", err)
+		fmt.Fprintf(os.Stderr, "error reading input: %v\n", err)
 		return err
 	}
 
 	// prepare output stream
 	if opts.Output != "" {
+		path := filepath.Dir(opts.Output)
+		if err := os.MkdirAll(path, os.ModePerm); err != nil {
+			fmt.Fprintf(os.Stderr, "error creating output directory %s: %v\v", path, err)
+			return err
+		}
 		output, err = os.Create(opts.Output)
+		if err != nil {
+			fmt.Fprintf(os.Stderr, "error creating output file %s: %v\v", opts.Output, err)
+			return err
+		}
 	} else {
 		output = os.Stdout
 	}
@@ -62,13 +68,11 @@ func (opts *Options) Execute() error {
 	if opts.Input != "" {
 		switch strings.ToLower(filepath.Ext(opts.Input)) {
 		case "yaml", "yml", ".yml", ".yaml":
-			log.Println("extension: YAML")
 			format = "yaml"
 		case "json", ".json":
-			log.Println("extension: JSON")
 			format = "json"
 		default:
-			log.Fatalf("unsupported input format: %v", filepath.Ext(opts.Input))
+			fmt.Fprintf(os.Stderr, "unsupported input format: %s\n", filepath.Ext(opts.Input))
 		}
 	} else {
 		format = opts.Format
@@ -78,20 +82,22 @@ func (opts *Options) Execute() error {
 	dynamic := make(map[string]interface{})
 	switch format {
 	case "yaml":
-		log.Println("extension: YAML")
 		if err = yaml.Unmarshal(input, &dynamic); err != nil {
+			fmt.Fprintf(os.Stderr, "error unmarshalling YAML input: %v\n", err)
 			return err
 		}
 	case "json":
-		log.Println("extension: JSON")
 		if err = json.Unmarshal(input, &dynamic); err != nil {
+			fmt.Fprintf(os.Stderr, "error unmarshalling JSON input: %v\n", err)
 			return err
 		}
 	default:
-		log.Println("extension", strings.ToLower(filepath.Ext(opts.Input)))
+		fmt.Fprintf(os.Stderr, "unsupported input format: %s\n", format)
+		return errors.New("unsupported input format")
 	}
 
 	if err = templ.Execute(output, dynamic); err != nil {
+		fmt.Fprintf(os.Stderr, "error applying variables to template: %v\n", err)
 		return err
 	}
 

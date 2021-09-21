@@ -1,7 +1,7 @@
 package main
 
 import (
-	"log"
+	"fmt"
 	"os"
 
 	"github.com/jessevdk/go-flags"
@@ -9,16 +9,15 @@ import (
 
 func main() {
 	options := Options{}
-	log.Println("entering application")
 
 	parser := flags.NewParser(&options, flags.Default)
 	if _, err := parser.Parse(); err != nil {
-		log.Printf("error parsing command line: %v\n", err)
+		fmt.Fprintf(os.Stderr, "error parsing command line: %v\n", err)
 		os.Exit(1)
 	}
 	err := options.Execute()
 	if err != nil {
-		log.Printf("error executing command: %v\n", err)
+		fmt.Fprintf(os.Stderr, "error executing command: %v\n", err)
 		os.Exit(1)
 	}
 }
