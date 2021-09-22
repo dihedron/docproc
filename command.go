@@ -16,8 +16,11 @@ import (
 type Options struct {
 	Input    string `short:"i" long:"input" description:"The path to the input file." optional:"yes" env:"GINKGO_INPUT"`
 	Format   string `short:"f" long:"format" description:"The format of the input data, if provided via STDIN." choice:"yaml" choice:"json" default:"json" optional:"yes" env:"GINKGO_FORMAT"`
-	Template string `short:"t" long:"template" description:"The path to the template file." required:"yes" env:"GINKGO_TEMPLATE"`
+	Template string `short:"t" long:"template" description:"The name of the main template file." required:"yes" env:"GINKGO_TEMPLATE"`
 	Output   string `short:"o" long:"output" description:"The path to the output file." optional:"yes" env:"GINKGO_OUTPUT"`
+	Args     struct {
+		Templates []string `short:"f" long:"template files" description:"The paths of all the templates and subtemplates on disk." required:"yes"`
+	} `positional-args:"yes" required:"yes"`
 }
 
 func (opts *Options) Execute() error {
@@ -26,10 +29,10 @@ func (opts *Options) Execute() error {
 	var output *os.File
 	var err error
 
-	// read the template
-	templ, err := template.ParseFiles(opts.Template)
+	// load all the templates
+	templates, err := template.ParseFiles(opts.Args.Templates...)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error parsing template file %s: %v\n", opts.Template, err)
+		fmt.Fprintf(os.Stderr, "error parsing template files %v: %v\n", opts.Args.Templates, err)
 		return err
 	}
 
@@ -96,7 +99,8 @@ func (opts *Options) Execute() error {
 		return errors.New("unsupported input format")
 	}
 
-	if err = templ.Execute(output, dynamic); err != nil {
+	//if err = templates.Execute(output, dynamic); err != nil {
+	if err = templates.ExecuteTemplate(output, opts.Template, dynamic); err != nil {
 		fmt.Fprintf(os.Stderr, "error applying variables to template: %v\n", err)
 		return err
 	}

@@ -9,3 +9,10 @@ Emails:
   Address: openstack.support@example.com
 - Name: Support to GitLab
   Address: gitlab.support@example.com
+Experiences:
+- From: 01/01/1990
+  To: 31/12/2009
+  Description: Software Developer
+- From: 01/01/2010
+  To: 31/12/2020
+  Description: Senior Software Developer
