@@ -1,4 +1,4 @@
 Prior Experience:
 {{ range .Experiences -}} 
-  * since {{ .From }} until {{ .To }} as {{ .Description }}
+  * since {{ .From }} until {{ .To }} as {{ padleft .Description ">>>" -}}
 {{ end }}

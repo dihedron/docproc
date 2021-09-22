@@ -1,6 +1,8 @@
 package main
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -23,14 +25,46 @@ type Options struct {
 	} `positional-args:"yes" required:"yes"`
 }
 
+// ./ginkgo -i=tests/input.yaml -t=outer.tpl tests/outer.tpl tests/inner.tpl
+
+func PadLeft(text string, padding string) string {
+	// func PadLeft(args ...interface{}) string {
+	// 	result := ""
+	// 	if args != nil {
+	// 		for i, arg := range args {
+	// 			result += fmt.Sprintf("%d => %v (%T)\n", i, arg, arg)
+	// 		}
+	// 		fmt.Println(result)
+	// 		return result
+	// 	} else {
+	// 		return "<empty>"
+	// 	}
+
+	var buffer bytes.Buffer
+	scanner := bufio.NewScanner(strings.NewReader(text))
+	for scanner.Scan() {
+		buffer.WriteString(padding)
+		buffer.WriteString(scanner.Text())
+		buffer.WriteString("\n")
+	}
+	return buffer.String()
+}
+
 func (opts *Options) Execute() error {
 
 	var input []byte
 	var output *os.File
 	var err error
 
+	// First we create a FuncMap with which to register the function.
+	funcMap := template.FuncMap{
+		// The name "title" is what the function will be called in the template text.
+		"title":   strings.Title,
+		"padleft": PadLeft,
+	}
+
 	// load all the templates
-	templates, err := template.ParseFiles(opts.Args.Templates...)
+	templates, err := template.New(opts.Template).Funcs(funcMap).ParseFiles(opts.Args.Templates...)
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error parsing template files %v: %v\n", opts.Args.Templates, err)
 		return err

@@ -4,7 +4,7 @@ Name: {{.Name}}
 Surname: {{.Surname}}
 Phone No.: {{.PhoneNo}}
 
-{{template "inner.tpl" .}}
+{{ padleft "aaa" "pippo" }} {{ template "inner.tpl" . }}
 
 {{if .Developer -}} Role: Developer {{- end}}
 {{if .SysAdmin}} Role: SysAdmin {{- end}}
