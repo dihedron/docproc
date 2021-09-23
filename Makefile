@@ -3,6 +3,9 @@ default: build
 build:
 	@go build -o ./bin/ginkgo
 
+optimise: build
+	@upx --best ./bin/ginkgo	
+
 clean:
 	@rm -rf bin/ 
 
