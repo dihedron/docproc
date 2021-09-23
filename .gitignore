@@ -1,11 +1,5 @@
 # Binaries for programs and plugins
-ginkgo
-*.exe
-*.exe~
-*.dll
-*.so
-*.dylib
-release/
+bin/
 
 # Test binary, built with `go test -c`
 *.test
