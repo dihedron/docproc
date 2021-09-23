@@ -39,6 +39,6 @@ If no output parameter is specified, `ginkgo` will write to STDOUT by default; t
 
 This application is loosely modelled after what you do with Python's `jinja` templating language.
 
-This application is is in Golang. 
+This application is in Golang. 
 
 `ginkgo` is the closest sensible word to bear a vague trace of both. 
