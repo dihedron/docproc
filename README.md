@@ -29,7 +29,7 @@ In order to use `ginkgo` without a variables file (the `--input` parameter) simp
 $> ./bin/ginkgo -i={} -t=outer.tpl tests/outer.tpl tests/inner.tpl
 ```
 
-If no output parameter is specified, `ginkgo` will write to STDOUT by default; thus, it can be used with pipes (`|`) where the STDIN is the set of input variables ipied into `ginkgo` and the output goes to SDOUT and can therefore be piped into other commands.
+If no output parameter is specified, `ginkgo` will write to STDOUT by default; thus, it can be used with pipes (`|`) where the STDIN is the set of input variables funnelled into `ginkgo` and the output goes to SDOUT and can therefore be piped into other commands.
 
 ## The `include` function
 
