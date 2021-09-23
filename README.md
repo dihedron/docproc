@@ -23,6 +23,14 @@ or
 $> cat tests/input.json | ginkgo --format=json --template=outer.tpl  tests/outer.tpl tests/inner.tpl
 ```
 
+In order to use `ginkgo` without a variables file (the `--input` parameter) simply pass in an empty inline YAML (`-i=---`) or JSON (`-i={}`) like so:
+
+```bash
+$> ./bin/ginkgo -i={} -t=outer.tpl tests/outer.tpl tests/inner.tpl
+```
+
+If no output parameter is pseified, `ginkgo` will write to STDOUT by default; thus, it can be used in a pie where the STDIN is the set of input variables and the output goes to SDOUT.
+
 ## The `include` function
 
-Ginkgo provides and additional ustom function, called `include`. It can be used when you want to include a sub-template and you would like it to be padded left with a fixed string, which will be applied line by line. For instance this is an easy way to include some file and have it automatically indented. Look at `tests/outer.tpl` to see how it includes a bash script prepending `> ` to each line.
+Ginkgo provides and additional custom function, called `include`. It can be used when you want to include a sub-template and you would like it to be padded left with a fixed string, which will be applied line by line. For instance this is an easy way to include some file and have it automatically indented. Look at `tests/outer.tpl` to see how it includes a bash script prepending `> ` to each line.

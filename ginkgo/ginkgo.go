@@ -24,10 +24,14 @@ type Engine struct {
 	} `positional-args:"yes" required:"yes"`
 }
 
+const FormatYAML = "yaml"
+const FormatJSON = "json"
+
 func (engine *Engine) Execute() error {
 
 	var input []byte
 	var output *os.File
+	var format string
 	var err error
 
 	// load all the templates
@@ -38,10 +42,18 @@ func (engine *Engine) Execute() error {
 	}
 
 	// read input
-	if engine.Input != "" {
-		input, err = os.ReadFile(engine.Input)
-	} else {
+	switch engine.Input {
+	case "": // read from STDIN
 		input, err = ioutil.ReadAll(os.Stdin)
+	case "---":
+		input = []byte(engine.Input)
+		format = FormatYAML
+	case "{}":
+		input = []byte(engine.Input)
+		format = FormatJSON
+	default: // file on disk
+		input, err = os.ReadFile(engine.Input)
+
 	}
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "error reading input: %v\n", err)
@@ -67,16 +79,18 @@ func (engine *Engine) Execute() error {
 		return err
 	}
 
-	// find the input file format
-	var format string
+	// find the input file format, unless it's already
+	// prepopulated by empty input
 	if engine.Input != "" {
-		switch strings.ToLower(filepath.Ext(engine.Input)) {
-		case "yaml", "yml", ".yml", ".yaml":
-			format = "yaml"
-		case "json", ".json":
-			format = "json"
-		default:
-			fmt.Fprintf(os.Stderr, "unsupported input format: %s\n", filepath.Ext(engine.Input))
+		if format == "" { // not prepopulated by fake input ('{}' or '---')
+			switch strings.ToLower(filepath.Ext(engine.Input)) {
+			case "yaml", "yml", ".yml", ".yaml":
+				format = FormatYAML
+			case "json", ".json":
+				format = FormatJSON
+			default:
+				fmt.Fprintf(os.Stderr, "unsupported input format: %s\n", filepath.Ext(engine.Input))
+			}
 		}
 	} else {
 		format = engine.Format
@@ -85,12 +99,12 @@ func (engine *Engine) Execute() error {
 	// read in input and unmarshal it
 	dynamic := make(map[string]interface{})
 	switch format {
-	case "yaml":
+	case FormatYAML:
 		if err = yaml.Unmarshal(input, &dynamic); err != nil {
 			fmt.Fprintf(os.Stderr, "error unmarshalling YAML input: %v\n", err)
 			return err
 		}
-	case "json":
+	case FormatJSON:
 		if err = json.Unmarshal(input, &dynamic); err != nil {
 			fmt.Fprintf(os.Stderr, "error unmarshalling JSON input: %v\n", err)
 			return err
