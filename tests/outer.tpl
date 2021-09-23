@@ -4,7 +4,7 @@ Name: {{.Name}}
 Surname: {{.Surname}}
 Phone No.: {{.PhoneNo}}
 
-{{ padleft "aaa" "pippo" }} {{ template "inner.tpl" . }}
+{{ template "inner.tpl" . }}
 
 {{if .Developer -}} Role: Developer {{- end}}
 {{if .SysAdmin}} Role: SysAdmin {{- end}}
@@ -12,3 +12,10 @@ Phone No.: {{.PhoneNo}}
     Description: {{ .Name }}
     Address: {{.Address}}
 {{end}}
+
+Include script as quote:
+{{ include "tests/included.sh" . "> " -}}
+Include script with 2-spaces indentation:
+{{ include "tests/included.sh" "  " -}}
+Include script as is:
+{{ include "tests/included.sh" . }}
