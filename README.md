@@ -33,7 +33,7 @@ If no output parameter is specified, `ginkgo` will write to STDOUT by default; t
 
 ## The `include` function
 
-`ginkgo` provides and additional custom function, called `include`. It can be used when you want to include a sub-template and you would like it to be padded left with a fixed string, which will be applied line by line. For instance this is an easy way to include some file and have it automatically indented. Look at `tests/outer.tpl` to see how it includes a bash script prepending `> ` to each line.
+`ginkgo` provides an additional custom function, called `include`. It can be used when you want to include a sub-template and you would like it to be padded left with a fixed string, which will be applied line by line. For instance this is an easy way to include some file and have it automatically indented. Look at `tests/outer.tpl` to see how it includes a bash script prepending `> ` to each line.
 
 ## Why `ginkgo`?
 
