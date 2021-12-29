@@ -14,19 +14,19 @@ Take a look a the `tests/` directory for an example:
 For example:
 
 ```bash
-$> ./bin/ginkgo -i=tests/input.yaml -t=outer.tpl tests/outer.tpl tests/inner.tpl
+$> ./bin/ginkgo -i=tests/input.yaml -m=outer.tpl -t=tests/outer.tpl -t=tests/inner.tpl
 ```
 
 or 
 
 ```bash
-$> cat tests/input.json | ginkgo --format=json --template=outer.tpl  tests/outer.tpl tests/inner.tpl
+$> cat tests/input.json | ginkgo --format=json --main=outer.tpl --template=tests/outer.tpl --template=tests/inner.tpl
 ```
 
 In order to use `ginkgo` without a variables file (the `--input` parameter) simply pass in an empty inline YAML (`-i=---`) or JSON (`-i={}`) like so:
 
 ```bash
-$> ./bin/ginkgo -i={} -t=outer.tpl tests/outer.tpl tests/inner.tpl
+$> ./bin/ginkgo -i={} -m=outer.tpl -t=tests/outer.tpl -t=tests/inner.tpl
 ```
 
 If no output parameter is specified, `ginkgo` will write to STDOUT by default; thus, it can be used with pipes (`|`) where the STDIN is the set of input variables funnelled into `ginkgo` and the output goes to SDOUT and can therefore be piped into other commands.

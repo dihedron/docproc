@@ -15,19 +15,17 @@ import (
 )
 
 type Engine struct {
-	Input    string `short:"i" long:"input" description:"The path to the input file." optional:"yes" env:"GINKGO_INPUT"`
-	Format   string `short:"f" long:"format" description:"The format of the input data, if provided via STDIN." choice:"yaml" choice:"json" default:"json" optional:"yes" env:"GINKGO_FORMAT"`
-	Template string `short:"t" long:"template" description:"The name of the main template file." required:"yes" env:"GINKGO_TEMPLATE"`
-	Output   string `short:"o" long:"output" description:"The path to the output file." optional:"yes" env:"GINKGO_OUTPUT"`
-	Args     struct {
-		Templates []string `short:"f" long:"template files" description:"The paths of all the templates and subtemplates on disk." required:"yes"`
-	} `positional-args:"yes" required:"yes"`
+	Input     string   `short:"i" long:"input" description:"The path to the input file." optional:"yes" env:"GINKGO_INPUT"`
+	Format    string   `short:"f" long:"format" description:"The format of the input data, if provided via STDIN." choice:"yaml" choice:"json" default:"json" optional:"yes" env:"GINKGO_FORMAT"`
+	Template  string   `short:"m" long:"main" description:"The name of the main template file." required:"yes" env:"GINKGO_TEMPLATE"`
+	Output    string   `short:"o" long:"output" description:"The path to the output file." optional:"yes" env:"GINKGO_OUTPUT"`
+	Templates []string `short:"t" long:"template" description:"The paths of all the templates and subtemplates on disk." required:"yes"`
 }
 
 const FormatYAML = "yaml"
 const FormatJSON = "json"
 
-func (engine *Engine) Execute() error {
+func (cmd *Engine) Execute() error {
 
 	var input []byte
 	var output *os.File
@@ -35,24 +33,24 @@ func (engine *Engine) Execute() error {
 	var err error
 
 	// load all the templates
-	templates, err := template.New(engine.Template).Funcs(FuncMap).ParseFiles(engine.Args.Templates...)
+	templates, err := template.New(cmd.Template).Funcs(FuncMap).ParseFiles(cmd.Templates...)
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "error parsing template files %v: %v\n", engine.Args.Templates, err)
+		fmt.Fprintf(os.Stderr, "error parsing template files %v: %v\n", cmd.Templates, err)
 		return err
 	}
 
 	// read input
-	switch engine.Input {
+	switch cmd.Input {
 	case "": // read from STDIN
 		input, err = ioutil.ReadAll(os.Stdin)
 	case "---":
-		input = []byte(engine.Input)
+		input = []byte(cmd.Input)
 		format = FormatYAML
 	case "{}":
-		input = []byte(engine.Input)
+		input = []byte(cmd.Input)
 		format = FormatJSON
 	default: // file on disk
-		input, err = os.ReadFile(engine.Input)
+		input, err = os.ReadFile(cmd.Input)
 
 	}
 	if err != nil {
@@ -61,15 +59,15 @@ func (engine *Engine) Execute() error {
 	}
 
 	// prepare output stream
-	if engine.Output != "" {
-		path := filepath.Dir(engine.Output)
+	if cmd.Output != "" {
+		path := filepath.Dir(cmd.Output)
 		if err := os.MkdirAll(path, os.ModePerm); err != nil {
 			fmt.Fprintf(os.Stderr, "error creating output directory %s: %v\v", path, err)
 			return err
 		}
-		output, err = os.Create(engine.Output)
+		output, err = os.Create(cmd.Output)
 		if err != nil {
-			fmt.Fprintf(os.Stderr, "error creating output file %s: %v\v", engine.Output, err)
+			fmt.Fprintf(os.Stderr, "error creating output file %s: %v\v", cmd.Output, err)
 			return err
 		}
 	} else {
@@ -81,19 +79,19 @@ func (engine *Engine) Execute() error {
 
 	// find the input file format, unless it's already
 	// prepopulated by empty input
-	if engine.Input != "" {
+	if cmd.Input != "" {
 		if format == "" { // not prepopulated by fake input ('{}' or '---')
-			switch strings.ToLower(filepath.Ext(engine.Input)) {
+			switch strings.ToLower(filepath.Ext(cmd.Input)) {
 			case "yaml", "yml", ".yml", ".yaml":
 				format = FormatYAML
 			case "json", ".json":
 				format = FormatJSON
 			default:
-				fmt.Fprintf(os.Stderr, "unsupported input format: %s\n", filepath.Ext(engine.Input))
+				fmt.Fprintf(os.Stderr, "unsupported input format: %s\n", filepath.Ext(cmd.Input))
 			}
 		}
 	} else {
-		format = engine.Format
+		format = cmd.Format
 	}
 
 	// read in input and unmarshal it
@@ -115,7 +113,7 @@ func (engine *Engine) Execute() error {
 	}
 
 	//if err = templates.Execute(output, dynamic); err != nil {
-	if err = templates.ExecuteTemplate(output, engine.Template, dynamic); err != nil {
+	if err = templates.ExecuteTemplate(output, cmd.Template, dynamic); err != nil {
 		fmt.Fprintf(os.Stderr, "error applying variables to template: %v\n", err)
 		return err
 	}
