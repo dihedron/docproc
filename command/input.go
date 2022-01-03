@@ -1,4 +1,4 @@
-package ginkgo
+package command
 
 import "github.com/dihedron/ginkgo/unmarshal"
 

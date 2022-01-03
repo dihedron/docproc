@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dihedron/ginkgo/ginkgo"
+	"github.com/dihedron/ginkgo/command"
 	"github.com/jessevdk/go-flags"
 )
 
 func main() {
-	ginkgo := ginkgo.Engine{}
+	ginkgo := command.Command{}
 
 	parser := flags.NewParser(&ginkgo, flags.Default)
 	if _, err := parser.Parse(); err != nil {

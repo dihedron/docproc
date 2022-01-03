@@ -14,7 +14,7 @@ Take a look a the `tests/` directory for an example:
 For example:
 
 ```bash
-$> ./bin/ginkgo -i=tests/input.yaml -m=outer.tpl -t=tests/outer.tpl -t=tests/inner.tpl
+$> ./bin/ginkgo -i=@tests/input.yaml -m=outer.tpl -t=tests/outer.tpl -t=tests/inner.tpl
 ```
 
 or 
