@@ -1,40 +1,49 @@
-# Ginkgo
+# Mason
 
-Use Golang templates on the command line and hydrate them with variable values provided via YAML or JSON files.
+A collection of tools to help in continuous integration.
 
-## Usage
+## Building
+
+In order to perform a local build for testing purposes:
+
+```bash
+$> goreleaser build --snapshot --single-target --rm-dist
+```
+
+For release builds, see the GoReleaser documentation at https://goreleaser.com.
+
+## Hydrate
+
+`mason hydrate`: use Golang templates on the command line and hydrate them with variable values provided via YAML or JSON files.
+
+### Usage
 
 Take a look a the `tests/` directory for an example: 
 
-1. you CAN specify an input file that will contain an arbitrary JSON or YAML structure with the input variables, or alternatively pipe it in via STDIN; in the latter case you must provide the `--format` parameter to let the application know if you're sending it the variables in JSON or YAML format;
-1. you MUST specify the *name* (not the path!) of the main template you want to fill;
+1. you CAN specify an input file that will contain an arbitrary JSON or YAML structure with the input variables, or alternatively pipe it in via STDIN; in the latter case if the input is in YAML format it should start with `---`, if in JSON format with `{`;
+1. the list of template files must be provided as multiple `--template` arguments pointing to their paths on disk; the first template is considered the main template (the starting point for template expansion);
 1. you CAN specify the name of an output file; if left blank the application will write to STDOUT;
-1. you MUST specify the list of templates that must be compiled together, including the main template at bullet 2., providing their *paths* on disk.
 
 For example:
 
 ```bash
-$> ./bin/ginkgo -i=@tests/input.yaml -m=outer.tpl -t=tests/outer.tpl -t=tests/inner.tpl
+$> mason hydrate -i=@tests/input.yaml -t=tests/outer.tpl -t=tests/inner.tpl
 ```
 
 or 
 
 ```bash
-$> cat tests/input.json | ginkgo --main=outer.tpl --template=tests/outer.tpl --template=tests/inner.tpl
+$> cat tests/input.json | mason hydrate --template=tests/outer.tpl --template=tests/inner.tpl
 ```
 
-In order to use `ginkgo` withinlined input on STDIN, simply make sure that if the input is in YAML format it starts with `---` and if in JSON format with `{`.
+If no output parameter is specified, `mason hydrate` will write to STDOUT by default; thus, it can be used with pipes (`|`) where the STDIN is the set of input variables funnelled into `mason hydrate` and the output goes to SDOUT and can therefore be piped into other commands.
 
-If no output parameter is specified, `ginkgo` will write to STDOUT by default; thus, it can be used with pipes (`|`) where the STDIN is the set of input variables funnelled into `ginkgo` and the output goes to SDOUT and can therefore be piped into other commands.
+### Custom functions
 
-## The `include` function
+`mason hydrate` provides a set of custom function that allow enriched template manipulation capabilities.  
 
-`ginkgo` provides an additional custom function, called `include`. It can be used when you want to include a sub-template and you would like it to be padded left with a fixed string, which will be applied line by line. For instance this is an easy way to include some file and have it automatically indented. Look at `tests/outer.tpl` to see how it includes a bash script prepending `> ` to each line.
+#### Function `include` 
 
-## Why `ginkgo`?
+The include function can be used when you want to include a sub-template (or any other file) and you would like it to be padded left line by line with a fixed string. For instance this provides a way to include some file and have it automatically indented. Look at `tests/outer.tpl` to see how it includes a bash script prepending `> ` to each line.
 
-This application is loosely modelled after what you do with Python's `jinja` templating language.
-
-This application is in Golang. 
-
-`ginkgo` is the closest sensible word to bear a vague trace of both. 
+#### Functions from 

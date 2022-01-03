@@ -1,4 +1,15 @@
 project_name: mason
+release:
+  github:
+    owner: dihedron
+    name: mason
+  name_template: '{{.Tag}}'
+scoop:
+  name: mason
+  commit_author:
+    name: Andrea Funtò
+    email: dihedron.dev@gmail.com
+  commit_msg_template: Scoop update for {{ .ProjectName }} version {{ .Tag }}
 before:
   hooks:
     - make clean
@@ -21,34 +32,34 @@ builds:
     flags:
       - -v
     ldflags:
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.Name={{.ProjectName}}'
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.Description={{.Env.DESCRIPTION}}'
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.Copyright={{.Env.COPYRIGHT}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.License={{.Env.LICENSE}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.LicenseURL={{.Env.LICENSE_URL}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.GoVersion={{.Env.GOVERSION}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.GoOS={{.Os}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.GoArch={{.Arch}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.GitTag={{.Tag}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.GitCommit={{.ShortCommit}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.GitHash={{.FullCommit}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.BuildDate={{.Date}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.BuildTime={{.Timestamp}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.VersionMajor={{.Major}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.VersionMinor={{.Minor}}' 
-      - -X 'git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build.VersionPatch={{.Patch}}' 
-    hooks:
-  #   pre: <whatever>
-      post: 
-        - upx --best "{{.Path}}"
+      - -X 'github.com/dihedron/mason/build.Name={{.ProjectName}}'
+      - -X 'github.com/dihedron/mason/build.Description={{.Env.DESCRIPTION}}'
+      - -X 'github.com/dihedron/mason/build.Copyright={{.Env.COPYRIGHT}}' 
+      - -X 'github.com/dihedron/mason/build.License={{.Env.LICENSE}}' 
+      - -X 'github.com/dihedron/mason/build.LicenseURL={{.Env.LICENSE_URL}}' 
+      - -X 'github.com/dihedron/mason/build.GoVersion={{.Env.GOVERSION}}' 
+      - -X 'github.com/dihedron/mason/build.GoOS={{.Os}}' 
+      - -X 'github.com/dihedron/mason/build.GoArch={{.Arch}}' 
+      - -X 'github.com/dihedron/mason/build.GitTag={{.Tag}}' 
+      - -X 'github.com/dihedron/mason/build.GitCommit={{.ShortCommit}}' 
+      - -X 'github.com/dihedron/mason/build.GitHash={{.FullCommit}}' 
+      - -X 'github.com/dihedron/mason/build.BuildDate={{.Date}}' 
+      - -X 'github.com/dihedron/mason/build.BuildTime={{.Timestamp}}' 
+      - -X 'github.com/dihedron/mason/build.VersionMajor={{.Major}}' 
+      - -X 'github.com/dihedron/mason/build.VersionMinor={{.Minor}}' 
+      - -X 'github.com/dihedron/mason/build.VersionPatch={{.Patch}}' 
+    # hooks:
+    #   pre: <whatever>
+    #   post: 
+    #     - upx --best "{{.Path}}"
 dockers:
 - image_templates: ["ghcr.io/goreleaser/example:{{ .Version }}"]
   dockerfile: Dockerfile
   build_flag_templates:
   - --label=org.opencontainers.image.title={{ .ProjectName }}
   - --label=org.opencontainers.image.description={{ .ProjectName }}
-  - --label=org.opencontainers.image.url=https://github.com/goreleaser/example
-  - --label=org.opencontainers.image.source=https://github.com/goreleaser/example
+  - --label=org.opencontainers.image.url=https://github.com/dihedron/mason
+  - --label=org.opencontainers.image.source=https://github.com/dihedron/mason
   - --label=org.opencontainers.image.version={{ .Version }}
   - --label=org.opencontainers.image.created={{ time "2006-01-02T15:04:05Z07:00" }}
   - --label=org.opencontainers.image.revision={{ .FullCommit }}

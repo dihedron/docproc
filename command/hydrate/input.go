@@ -1,6 +1,6 @@
-package command
+package hydrate
 
-import "github.com/dihedron/ginkgo/unmarshal"
+import "github.com/dihedron/mason/unmarshal"
 
 type Input map[string]interface{}
 

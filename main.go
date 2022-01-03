@@ -1,24 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
-	"github.com/dihedron/ginkgo/command"
+	_ "github.com/dihedron/mason/autolog"
+	"github.com/dihedron/mason/command"
 	"github.com/jessevdk/go-flags"
+	"go.uber.org/zap"
 )
 
 func main() {
-	ginkgo := command.Command{}
+	defer zap.L().Sync()
 
-	parser := flags.NewParser(&ginkgo, flags.Default)
+	options := command.Commands{}
+
+	parser := flags.NewParser(&options, flags.Default)
 	if _, err := parser.Parse(); err != nil {
-		fmt.Fprintf(os.Stderr, "parsing error: %v\n", err)
-		os.Exit(1)
-	}
-	err := ginkgo.Execute()
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "execution error: %v\n", err)
+		zap.S().With(zap.Error(err)).Error("failure parsing command line")
 		os.Exit(1)
 	}
 }

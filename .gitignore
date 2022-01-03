@@ -1,5 +1,4 @@
 # Binaries for programs and plugins
-bin/
 dist/
 
 # Test binary, built with `go test -c`
@@ -8,6 +7,9 @@ output.txt
 
 # Output of the go coverage tool, specifically when used with LiteIDE
 *.out
+
+# Logs
+*.log
 
 # Dependency directories (remove the comment below to include it)
 # vendor/

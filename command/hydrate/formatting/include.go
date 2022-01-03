@@ -1,4 +1,4 @@
-package funcs
+package formatting
 
 import (
 	"bufio"
@@ -19,9 +19,6 @@ func Include(args ...interface{}) (string, error) {
 		padding string
 		dynamic map[string]interface{}
 	)
-
-	//DumpArgs(args...)
-
 	if args == nil {
 		return "", errors.New("include: at least the template path must be specified")
 	}

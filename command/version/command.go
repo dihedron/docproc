@@ -7,8 +7,8 @@ import (
 	"path"
 	"strings"
 
-	"git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/build"
-	"git.gld-1.cloud.bankit.it/shared/utils/cloudctl/sdk/command/base"
+	"github.com/dihedron/mason/build"
+	"github.com/dihedron/mason/command/base"
 	"go.uber.org/zap"
 )
 
@@ -66,7 +66,7 @@ type GitInfo struct {
 
 // Execute is the real implementation of the Version command.
 func (cmd *Version) Execute(args []string) error {
-	zap.S().Debug("running version command (BuildName: %s)", build.Name)
+	zap.S().Debugf("running version command (BuildName: %s)", build.Name)
 	if cmd.Automation {
 		var info interface{}
 		if !cmd.Verbose {
@@ -113,16 +113,15 @@ func (cmd *Version) Execute(args []string) error {
 		fmt.Println(string(data))
 	} else {
 		if !cmd.Verbose {
-			fmt.Printf("\n  %s v%s - %s - %s\n\n", path.Base(os.Args[0]), build.GitTag, build.Copyright, build.Description)
+			fmt.Printf("\n  %s %s - %s - %s\n\n", path.Base(os.Args[0]), build.GitTag, build.Copyright, build.Description)
 		} else {
-			fmt.Printf("\n  %s v%s - %s - %s\n\n", path.Base(os.Args[0]), build.GitTag, build.Copyright, build.Description)
+			fmt.Printf("\n  %s %s - %s - %s\n\n", path.Base(os.Args[0]), build.GitTag, build.Copyright, build.Description)
 			fmt.Printf("  - Name             : %s\n", build.Name)
 			fmt.Printf("  - Description      : %s\n", build.Description)
 			fmt.Printf("  - Copyright        : %s\n", build.Copyright)
 			fmt.Printf("  - Major Version    : %s\n", build.VersionMajor)
 			fmt.Printf("  - Minor Version    : %s\n", build.VersionMinor)
 			fmt.Printf("  - Patch Version    : %s\n", build.VersionPatch)
-			fmt.Printf("  - Minor Version    : %s\n", build.VersionMinor)
 			fmt.Printf("  - Built on         : %s\n", build.BuildDate)
 			fmt.Printf("  - Built at         : %s\n", build.BuildTime)
 			fmt.Printf("  - Compiler         : %s\n", build.GoVersion)
