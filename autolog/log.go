@@ -136,3 +136,13 @@ func fillForElastic(configuration *zap.Config) {
 	// 	configuration.InitialFields["service.environment"] = "development"
 	// }
 }
+
+func ToJSON(v interface{}, pretty bool) string {
+	if pretty {
+		result, _ := json.MarshalIndent(v, "", "  ")
+		return string(result)
+	} else {
+		result, _ := json.Marshal(v)
+		return string(result)
+	}
+}

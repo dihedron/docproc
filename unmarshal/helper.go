@@ -23,7 +23,7 @@ const (
 // be a file on the loca filesystem, it is read into memory and then
 // unmarshalled into the object struct, which must be appropriately
 // annotated; if it does not start with '@', it is assumed to be an
-// inline JSON representation ans is unmarshalled as such.
+// inline JSON representation and is unmarshalled as such.
 func FromFlag(value string, object interface{}) error {
 	format := DataFormatJSON
 	var content []byte
