@@ -24,7 +24,7 @@ type Hydrate struct {
 	Output    string   `short:"o" long:"output" description:"The path to the output file." optional:"yes" env:"MASON_OUTPUT"`
 }
 
-func (cmd *Hydrate) Execute() error {
+func (cmd *Hydrate) Execute(args []string) error {
 	var err error
 
 	// if the input map is nil, then the input data is

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	_ "github.com/dihedron/mason/autolog"
@@ -17,6 +18,7 @@ func main() {
 	parser := flags.NewParser(&options, flags.Default)
 	if _, err := parser.Parse(); err != nil {
 		zap.S().With(zap.Error(err)).Error("failure parsing command line")
+		fmt.Fprintf(os.Stderr, "error: %v\n", err)
 		os.Exit(1)
 	}
 }

@@ -1,7 +1,7 @@
 This is the resumé of {{.Name}} {{.Surname}}
 
-Name: {{.Name}}
-Surname: {{.Surname}}
+Name: {{.Name | red}}
+Surname: {{.Surname | red}}
 Phone No.: {{.PhoneNo}}
 
 {{ template "inner.tpl" . }}

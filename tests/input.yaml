@@ -3,7 +3,7 @@ Name: John
 Surname: Doe
 Developer: true
 SysAdmin: false
-PhoneNo: 123456
+PhoneNo: 555-123456
 Emails:
 - Name: Support to OpenStack
   Address: openstack.support@example.com
