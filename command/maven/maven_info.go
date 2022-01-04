@@ -1,6 +1,7 @@
 package maven
 
 import (
+	_ "embed"
 	"html/template"
 	"os"
 )
@@ -9,13 +10,12 @@ type Info struct {
 	Command
 }
 
-func (cmd *Info) Execute(args []string) error {
-	// cmd.Project.GroupId.Text
+//go:embed templates/simple.tpl
+var simple string
 
-	t := template.Must(template.New("").Parse(`Group ID    : {{ .GroupId.Text }}
-Artifact ID : {{ .ArtifactId.Text }}
-Version     : {{ .Version.Text }}
-`))
+func (cmd *Info) Execute(args []string) error {
+
+	t := template.Must(template.New("").Parse(simple))
 	t.Execute(os.Stdout, cmd.Project)
 	return nil
 }
