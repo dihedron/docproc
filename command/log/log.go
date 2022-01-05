@@ -164,7 +164,7 @@ func (cmd *Log) Execute(args []string) error {
 			if isTTY {
 				severity = fmt.Sprintf("%s - [%s]%s:", now, color.HiWhiteString(severity), caller)
 			} else {
-
+				severity = fmt.Sprintf("%s - [%s]%s:", now, severity, caller)
 			}
 		case DebugLog:
 			switch cmd.Format {
