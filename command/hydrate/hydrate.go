@@ -14,6 +14,7 @@ import (
 	"github.com/Masterminds/sprig/v3"
 	"github.com/dihedron/mason/command/base"
 	"github.com/dihedron/mason/command/hydrate/formatting"
+	"github.com/dihedron/mason/unmarshal"
 	"gopkg.in/yaml.v3"
 )
 
@@ -22,6 +23,12 @@ type Hydrate struct {
 	Input     *Input   `short:"i" long:"input" description:"The input data, either as an inline JSON value or as a @file (in JSON or YAML format)." otional:"yes" env:"MASON_INPUT"`
 	Templates []string `short:"t" long:"template" description:"The paths of all the templates and subtemplates on disk." required:"yes"`
 	Output    string   `short:"o" long:"output" description:"The path to the output file." optional:"yes" env:"MASON_OUTPUT"`
+}
+
+type Input map[string]interface{}
+
+func (i *Input) UnmarshalFlag(value string) error {
+	return unmarshal.FromFlag(value, i)
 }
 
 func (cmd *Hydrate) Execute(args []string) error {

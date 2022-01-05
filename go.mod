@@ -3,16 +3,17 @@ module github.com/dihedron/mason
 go 1.17
 
 require (
+	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/Masterminds/sprig/v3 v3.2.2
 	github.com/jedib0t/go-pretty/v6 v6.2.4
 	github.com/jessevdk/go-flags v1.5.0
-	go.uber.org/zap v1.19.1
+	go.uber.org/zap v1.20.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
 require (
 	github.com/Masterminds/goutils v1.1.1 // indirect
-	github.com/Masterminds/semver/v3 v3.1.1 // indirect
+	github.com/benbjohnson/clock v1.3.0 // indirect
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/huandu/xstrings v1.3.2 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect

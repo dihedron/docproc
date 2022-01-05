@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type Project struct {
+type POM struct {
 	XMLName        xml.Name `xml:"project" json:"project,omitempty"`
 	XMLNS          string   `xml:"xmlns,attr" json:"xmlns,omitempty"`
 	XSI            string   `xml:"xsi,attr" json:"xsi,omitempty"`
@@ -54,7 +54,7 @@ type Project struct {
 	} `xml:"modules" json:"modules,omitempty"`
 }
 
-func (p *Project) UnmarshalFlag(value string) error {
+func (p *POM) UnmarshalFlag(value string) error {
 	var content []byte
 	if strings.HasPrefix(value, "@") {
 		filename := strings.TrimPrefix(value, "@")
@@ -72,6 +72,5 @@ func (p *Project) UnmarshalFlag(value string) error {
 	} else {
 		content = []byte(value)
 	}
-
 	return xml.Unmarshal(content, &p)
 }

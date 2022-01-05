@@ -14,8 +14,7 @@ type Info struct {
 var simple string
 
 func (cmd *Info) Execute(args []string) error {
-
 	t := template.Must(template.New("").Parse(simple))
-	t.Execute(os.Stdout, cmd.Project)
+	t.Execute(os.Stdout, cmd.POM)
 	return nil
 }
