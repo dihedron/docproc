@@ -22,6 +22,9 @@ func (cmd *Bump) Execute(args []string) error {
 	if len(args) == 0 {
 		return errors.New("at least one version must be provided")
 	}
+
+	versions := []*SemVer{}
+
 	for _, arg := range args {
 		v, err := semver.NewVersion(arg) //"1.2.3-beta.1+build345")
 		if err != nil {
@@ -30,6 +33,10 @@ func (cmd *Bump) Execute(args []string) error {
 		cmd.Patch = cmd.Patch || cmd.Revision
 		if (cmd.Major && cmd.Minor) || (cmd.Major && cmd.Patch) || (cmd.Minor && cmd.Patch) {
 			return fmt.Errorf("only one of --major (value: %t), --minor (value: %t) and --patch (value: %t) must be provided at once", cmd.Major, cmd.Minor, cmd.Patch)
+		}
+		if !cmd.Major && !cmd.Minor && !cmd.Patch {
+			// no flag set, default to...
+			cmd.Patch = true
 		}
 		if cmd.Major {
 			v1 := v.IncMajor()
@@ -42,25 +49,26 @@ func (cmd *Bump) Execute(args []string) error {
 			v = &v1
 		}
 		if cmd.Automation {
-			j := struct {
-				Major      uint64 `json:"major"`
-				Minor      uint64 `json:"minor"`
-				Patch      uint64 `json:"patch"`
-				PreRelease string `json:"prerelease,omitempty"`
-			}{
-				Major:      v.Major(),
-				Minor:      v.Minor(),
-				Patch:      v.Patch(),
-				PreRelease: v.Prerelease(),
-			}
-			data, err := json.Marshal(j)
-			if err != nil {
-				return fmt.Errorf("error marshalling version '%s' to JSON: %w", v.String(), err)
-			}
-			fmt.Printf("%s", string(data))
+			versions = append(versions, NewSemVer(v))
 		} else {
 			fmt.Printf("%s\n", v.String())
 		}
+	}
+
+	if cmd.Automation {
+		var (
+			data []byte
+			err  error
+		)
+		if len(versions) > 1 {
+			data, err = json.Marshal(versions)
+		} else {
+			data, err = json.Marshal(versions[0])
+		}
+		if err != nil {
+			return fmt.Errorf("error marshalling version(s) '%v' to JSON: %w", versions, err)
+		}
+		fmt.Printf("%s", string(data))
 	}
 
 	return nil
