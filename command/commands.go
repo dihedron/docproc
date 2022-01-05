@@ -2,6 +2,7 @@ package command
 
 import (
 	"github.com/dihedron/mason/command/hydrate"
+	"github.com/dihedron/mason/command/log"
 	"github.com/dihedron/mason/command/maven"
 	"github.com/dihedron/mason/command/semver"
 	"github.com/dihedron/mason/command/version"
@@ -17,4 +18,6 @@ type Commands struct {
 	Maven maven.Maven `command:"maven" alias:"mvn" alias:"m" description:"Manipulate POM files."`
 	// SemanticVersion collects all semantic versioning related commands.
 	SemanticVersion semver.SemanticVersion `command:"semver" alias:"sv" alias:"s" description:"Manipulate semantic versions."`
+
+	Log log.Log `command:"log" alias:"l" description:"Log messages to the console."`
 }
