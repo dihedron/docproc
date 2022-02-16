@@ -48,10 +48,10 @@ builds:
       - -X 'github.com/dihedron/mason/build.VersionMajor={{.Major}}' 
       - -X 'github.com/dihedron/mason/build.VersionMinor={{.Minor}}' 
       - -X 'github.com/dihedron/mason/build.VersionPatch={{.Patch}}' 
-    # hooks:
+    hooks:
     #   pre: <whatever>
-    #   post: 
-    #     - upx --best "{{.Path}}"
+      post: 
+        - upx --best "{{.Path}}"
 dockers:
 - image_templates: ["ghcr.io/goreleaser/example:{{ .Version }}"]
   dockerfile: Dockerfile
