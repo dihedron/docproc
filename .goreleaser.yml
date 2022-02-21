@@ -21,7 +21,7 @@ builds:
     - COPYRIGHT=2022 © Andrea Funtò
     - LICENSE=MIT
     - LICENSE_URL=https://opensource.org/licenses/MIT
-    - GOVERSION=1.17.5
+    - GOVERSION=1.17.7
     # - GOVERSION=$(go version | awk '{print $3;}')
     - CGO_ENABLED=0
     goos:

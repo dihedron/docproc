@@ -1,21 +1,18 @@
 package hydrate
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"os"
 	"path"
 	"path/filepath"
-	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig/v3"
 	"github.com/dihedron/mason/command/base"
 	"github.com/dihedron/mason/command/hydrate/formatting"
 	"github.com/dihedron/mason/unmarshal"
-	"gopkg.in/yaml.v3"
 )
 
 type Hydrate struct {
@@ -25,10 +22,14 @@ type Hydrate struct {
 	Output    string   `short:"o" long:"output" description:"The path to the output file." optional:"yes" env:"MASON_OUTPUT"`
 }
 
-type Input map[string]interface{}
+type Input struct {
+	Data interface{}
+}
 
 func (i *Input) UnmarshalFlag(value string) error {
-	return unmarshal.FromFlag(value, i)
+	var err error
+	i.Data, err = unmarshal.FromFlag(value)
+	return err
 }
 
 func (cmd *Hydrate) Execute(args []string) error {
@@ -41,19 +42,22 @@ func (cmd *Hydrate) Execute(args []string) error {
 		if err != nil {
 			return fmt.Errorf("error reading input data from STDIN: %w", err)
 		}
-		m := Input(make(map[string]interface{}))
-		cmd.Input = &m
-		if strings.HasPrefix(strings.TrimLeft(string(input), " \n\r"), "---") {
-			if err = yaml.Unmarshal(input, &cmd.Input); err != nil {
-				return fmt.Errorf("error unmarshalling YAML input: %w", err)
-			}
-		} else if strings.HasPrefix(strings.TrimLeft(string(input), " \n\r"), "{") {
-			if err = json.Unmarshal(input, &cmd.Input); err != nil {
-				return fmt.Errorf("error unmarshalling JSON input: %w", err)
-			}
-		} else {
-			return fmt.Errorf("unrecognisable input format on STDIN")
+		cmd.Input = &Input{}
+		if err = cmd.Input.UnmarshalFlag(string(input)); err != nil {
+			return err
 		}
+		//cmd.Input = &Input{}
+		// if strings.HasPrefix(strings.TrimLeft(string(input), " \n\r"), "---") {
+		// 	if err = yaml.Unmarshal(input, &cmd.Input); err != nil {
+		// 		return fmt.Errorf("error unmarshalling YAML input (%T): %w", err, err)
+		// 	}
+		// } else if strings.HasPrefix(strings.TrimLeft(string(input), " \n\r"), "{") {
+		// 	if err = json.Unmarshal(input, &cmd.Input); err != nil {
+		// 		return fmt.Errorf("error unmarshalling JSON input (%T): %w", err, err)
+		// 	}
+		// } else {
+		// 	return fmt.Errorf("unrecognisable input format on STDIN")
+		// }
 	}
 
 	// prepare the output stream
@@ -88,7 +92,7 @@ func (cmd *Hydrate) Execute(args []string) error {
 	}
 
 	// execute the template
-	if err := templates.ExecuteTemplate(output, main, map[string]interface{}(*cmd.Input)); err != nil {
+	if err := templates.ExecuteTemplate(output, main, cmd.Input.Data); err != nil {
 		return fmt.Errorf("error applying data to template: %w", err)
 	}
 	return nil
