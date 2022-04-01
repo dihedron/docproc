@@ -12,7 +12,7 @@ import (
 	"github.com/Masterminds/sprig/v3"
 	"github.com/dihedron/mason/command/base"
 	"github.com/dihedron/mason/command/hydrate/formatting"
-	"github.com/dihedron/mason/unmarshal"
+	"github.com/dihedron/rawdata"
 )
 
 type Hydrate struct {
@@ -28,7 +28,7 @@ type Input struct {
 
 func (i *Input) UnmarshalFlag(value string) error {
 	var err error
-	i.Data, err = unmarshal.FromFlag(value)
+	i.Data, err = rawdata.Unmarshal(value)
 	return err
 }
 
@@ -46,18 +46,6 @@ func (cmd *Hydrate) Execute(args []string) error {
 		if err = cmd.Input.UnmarshalFlag(string(input)); err != nil {
 			return err
 		}
-		//cmd.Input = &Input{}
-		// if strings.HasPrefix(strings.TrimLeft(string(input), " \n\r"), "---") {
-		// 	if err = yaml.Unmarshal(input, &cmd.Input); err != nil {
-		// 		return fmt.Errorf("error unmarshalling YAML input (%T): %w", err, err)
-		// 	}
-		// } else if strings.HasPrefix(strings.TrimLeft(string(input), " \n\r"), "{") {
-		// 	if err = json.Unmarshal(input, &cmd.Input); err != nil {
-		// 		return fmt.Errorf("error unmarshalling JSON input (%T): %w", err, err)
-		// 	}
-		// } else {
-		// 	return fmt.Errorf("unrecognisable input format on STDIN")
-		// }
 	}
 
 	// prepare the output stream

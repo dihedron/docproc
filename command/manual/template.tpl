@@ -11,15 +11,11 @@ VERSION:
 COMMANDS:
     Each command can be combined with a series of other sub commands and their relative options. Look at the example for this kind of pattern.
 
-    manual, man                                 Show manual
+    manual, man                                 Show this manual
     version, v, ver                             Print the command version and exit.
-    credits, cred, c                            Print credits and exit.
-    plugin, plg, p                              Manage locally installed plugins.
-        SUB COMMANDS:
-            list, ls, l                         List all locally available plugins.
-            fetch, f                            Fetch list of available plugins from remote repository.
-            prepare, p                          Prepare plugins for serving from a local repository.
-                --directory, -d                     The directory of the repository.
+    hydrate, hyd, h                             Fill one or more templates with input data.
+        --input, -i                                 The input data to use (as inline JSON/YAML or via @<filename>).
+        --template, -t                              The Golang templates to use; the first one is the main template..
     repository, repo, r                         Manage the the plugin repository.
         SUB COMMANDS:
             add, a                              Adds plugins to the repository.

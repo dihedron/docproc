@@ -5,12 +5,12 @@ go 1.17
 require (
 	github.com/Masterminds/semver/v3 v3.1.1
 	github.com/Masterminds/sprig/v3 v3.2.2
+	github.com/dihedron/rawdata v1.0.1
 	github.com/fatih/color v1.13.0
 	github.com/jedib0t/go-pretty/v6 v6.2.7
 	github.com/jessevdk/go-flags v1.5.0
 	github.com/mattn/go-isatty v0.0.14
 	go.uber.org/zap v1.21.0
-	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 )
 
 require (
@@ -31,4 +31,5 @@ require (
 	golang.org/x/crypto v0.0.0-20220214200702-86341886e292 // indirect
 	golang.org/x/sys v0.0.0-20220209214540-3681064d5158 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
