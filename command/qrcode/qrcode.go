@@ -17,6 +17,7 @@ type QrCode struct {
 	Borderless bool `short:"b" long:"no-border" description:"Create the QRCode without a border" optional:"yes"`
 }
 
+
 func (cmd *QrCode) Execute(args []string) error {
 	// command Bump with no increment indication
 	cmd2 := &Bump{
